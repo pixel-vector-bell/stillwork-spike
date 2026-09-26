@@ -71,47 +71,44 @@ nav button.on{color:var(--gold)}
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const HUNT_MS = 5 * 60 * 1000;
+const HUNT_MS = 60 * 1000;
 const BAG_MAX = 50;
 const CAMPS = 4;
 const XP_NEED = lv => 20 + lv * 12;
 
 const SP = [
-  {id:"pebblet",n:"Pebblet",role:"mine",r:"common",evo:"gravall",evoLv:10,mark:"▲",col:"#8a7a62"},
-  {id:"gravall",n:"Gravall",role:"mine",r:"uncommon",mark:"◆",col:"#6a6054"},
-  {id:"copperkit",n:"Copperkit",role:"mine",r:"common",mark:"•",col:"#c4844a"},
-  {id:"quartzling",n:"Quartzling",role:"mine",r:"common",mark:"✧",col:"#d0d8e0"},
-  {id:"emberat",n:"Emberat",role:"mine",r:"uncommon",mark:"▾",col:"#c45a32"},
-  {id:"sootling",n:"Sootling",role:"mine",r:"uncommon",mark:"○",col:"#4a4a52"},
-  {id:"orelet",n:"Orelet",role:"mine",r:"rare",evo:"veinstone",evoLv:16,mark:"▣",col:"#7a90a8"},
-  {id:"veinstone",n:"Veinstone",role:"mine",r:"rare",mark:"■",col:"#4a6888"},
-  {id:"magmite",n:"Magmite",role:"mine",r:"rare",mark:"▲",col:"#d45a2a"},
-  {id:"crownore",n:"Crownore",role:"mine",r:"chase",mark:"★",col:"#e0c36a"},
-  {id:"darter",n:"Darter",role:"fish",r:"common",evo:"brookfin",evoLv:10,mark:"›",col:"#6ab4d4"},
-  {id:"brookfin",n:"Brookfin",role:"fish",r:"uncommon",mark:"»",col:"#3a88a8"},
-  {id:"minnow",n:"Minnow",role:"fish",r:"common",mark:"·",col:"#9ad0c8"},
-  {id:"kelpling",n:"Kelpling",role:"fish",r:"common",mark:"~",col:"#5a9070"},
-  {id:"saltcrab",n:"Saltcrab",role:"fish",r:"common",mark:"+",col:"#d09070"},
-  {id:"tidepup",n:"Tidepup",role:"fish",r:"uncommon",mark:"ω",col:"#4a90c0"},
-  {id:"fogeel",n:"Fogeel",role:"fish",r:"uncommon",mark:"∫",col:"#8aa0b0"},
-  {id:"deepgill",n:"Deepgill",role:"fish",r:"rare",mark:"∇",col:"#2a5080"},
-  {id:"mirrorcarp",n:"Mirrorcarp",role:"fish",r:"chase",mark:"◇",col:"#c8e0e8"},
-  {id:"scrapup",n:"Scrapup",role:"fight",r:"common",evo:"brashound",evoLv:10,mark:"✕",col:"#a07060"},
-  {id:"brashound",n:"Brashound",role:"fight",r:"uncommon",mark:"⚔",col:"#8a4030"},
-  {id:"dustfox",n:"Dustfox",role:"fight",r:"common",mark:"△",col:"#c4a070"},
-  {id:"thornbat",n:"Thornbat",role:"fight",r:"common",mark:"*",col:"#607848"},
-  {id:"nightelk",n:"Nightelk",role:"fight",r:"uncommon",mark:"Y",col:"#4a5068"},
-  {id:"ironjaw",n:"Ironjaw",role:"fight",r:"uncommon",mark:"≡",col:"#808890"},
-  {id:"direpelt",n:"Direpelt",role:"fight",r:"rare",mark:"▼",col:"#5a3040"},
-  {id:"ashwyrm",n:"Ashwyrm",role:"fight",r:"rare",mark:"S",col:"#705848"},
-  {id:"kingfang",n:"Kingfang",role:"fight",r:"chase",mark:"♔",col:"#e0c36a"},
+  {id:"gleck",n:"Gleck",role:"mine",r:"common",evo:"gleckor",evoLv:10,mark:"▲",col:"#6e5a88"},
+  {id:"gleckor",n:"Gleckor",role:"mine",r:"uncommon",mark:"◆",col:"#4a3868"},
+  {id:"vorr",n:"Vorr",role:"mine",r:"common",mark:"⬡",col:"#8a6048"},
+  {id:"klyx",n:"Klyx",role:"mine",r:"common",mark:"✧",col:"#70c8c0"},
+  {id:"zoln",n:"Zoln",role:"mine",r:"uncommon",mark:"◉",col:"#c45a32"},
+  {id:"umberith",n:"Umberith",role:"mine",r:"uncommon",mark:"▣",col:"#5a4838"},
+  {id:"phaest",n:"Phaest",role:"mine",r:"rare",evo:"phaestyn",evoLv:16,mark:"✦",col:"#d4a060"},
+  {id:"phaestyn",n:"Phaestyn",role:"mine",r:"rare",mark:"✸",col:"#e8c878"},
+  {id:"quorvex",n:"Quorvex",role:"mine",r:"chase",mark:"★",col:"#e0c36a"},
+  {id:"nulith",n:"Nulith",role:"fish",r:"common",evo:"nulithar",evoLv:10,mark:"☽",col:"#4a88b8"},
+  {id:"nulithar",n:"Nulithar",role:"fish",r:"uncommon",mark:"☾",col:"#2a6088"},
+  {id:"iskari",n:"Iskari",role:"fish",r:"common",mark:"◇",col:"#7ec8e0"},
+  {id:"vesperid",n:"Vesperid",role:"fish",r:"common",mark:"✧",col:"#8a70b0"},
+  {id:"thalune",n:"Thalune",role:"fish",r:"uncommon",mark:"≈",col:"#3a7080"},
+  {id:"orryx",n:"Orryx",role:"fish",r:"uncommon",mark:"◈",col:"#50a090"},
+  {id:"caelith",n:"Caelith",role:"fish",r:"rare",mark:"▽",col:"#a8d0e8"},
+  {id:"aelurion",n:"Aelurion",role:"fish",r:"chase",mark:"✧",col:"#d0e8f0"},
+  {id:"draug",n:"Draug",role:"fight",r:"common",evo:"draugoth",evoLv:10,mark:"✕",col:"#8a3048"},
+  {id:"draugoth",n:"Draugoth",role:"fight",r:"uncommon",mark:"⚔",col:"#6a1830"},
+  {id:"velm",n:"Velm",role:"fight",r:"common",mark:"△",col:"#c07050"},
+  {id:"skarnox",n:"Skarnox",role:"fight",r:"common",mark:"▽",col:"#607848"},
+  {id:"pyrrax",n:"Pyrrax",role:"fight",r:"uncommon",mark:"▲",col:"#d05028"},
+  {id:"hokari",n:"Hokari",role:"fight",r:"uncommon",mark:"☰",col:"#4a5068"},
+  {id:"nyxil",n:"Nyxil",role:"fight",r:"rare",mark:"▼",col:"#3a2048"},
+  {id:"myrrhax",n:"Myrrhax",role:"fight",r:"chase",mark:"♔",col:"#e0c36a"},
 ];
 const W = {common:56, uncommon:28, rare:12, chase:4};
 const CATCH = {common:0.9, uncommon:0.7, rare:0.4, chase:0.12};
 const WILD = [
-  {id:"rat",n:"Trail rat",hp:16,atk:3,xp:8},
-  {id:"wolf",n:"Grey wolf",hp:32,atk:7,xp:18},
-  {id:"dire",n:"Dire wolf",hp:58,atk:12,xp:32},
+  {id:"shrike",n:"Glass shrike",hp:16,atk:3,xp:8},
+  {id:"wight",n:"Bog wight",hp:32,atk:7,xp:18},
+  {id:"hollow",n:"Hollow titan",hp:58,atk:12,xp:32},
 ];
 
 const sp = id => SP.find(s=>s.id===id);
@@ -137,10 +134,10 @@ const S = {
   last: Date.now(),
   toast: "",
 };
-function save(){localStorage.setItem("rove-v1", JSON.stringify({...S, toast:"", fight:S.fight}))}
+function save(){localStorage.setItem("rove-v2", JSON.stringify({...S, toast:"", fight:S.fight}))}
 function load(){
   try{
-    const d=JSON.parse(localStorage.getItem("rove-v1")||"null");
+    const d=JSON.parse(localStorage.getItem("rove-v2")||"null");
     if(!d) return;
     S.gold=d.gold??20; S.bag=d.bag||[]; S.camp=d.camp||[null,null,null,null];
     S.huntAt=d.huntAt||0; S.last=d.last||Date.now();
@@ -248,19 +245,19 @@ function fmt(ms){
 function sprite(s){
   return `<div class="dot" style="background:${s.col}">${s.mark}</div>`;
 }
-function roleLab(r){return r==="mine"?"Mine":r==="fish"?"Fish":"Fight"}
+function roleLab(r){return r==="mine"?"Dig":r==="fish"?"Trawl":"Skirmish"}
 
 function viewHunt(){
   const ready=huntReady();
   return `<div class="card">
     <h2>Trainer hunt</h2>
-    <p class="sub">Send the trainer out. 80% chance of an encounter. Rarity decides if it stays. 5:00 cooldown.</p>
+    <p class="sub">Send the trainer out. 80% chance of an encounter. Rarity decides if it stays. 1:00 cooldown (test).</p>
     <div class="timer">${ready?"Ready":fmt(huntLeft())}</div>
     <button class="big" ${ready?"":"disabled"} onclick="hunt()">Send trainer</button>
   </div>
   <div class="card"><h2>Roster mix</h2>
-    <p class="sub">24 species. Commons fill the bag. Chase things (Crownore, Mirrorcarp, Kingfang) almost always flee.</p>
-    <p class="sub">Jobs: mine / fish / fight. Own one and you can camp it or short-battle with it.</p>
+    <p class="sub">Kin are not wildlife. Commons fill the bag. Chase kin (Quorvex, Aelurion, Myrrhax) usually flee.</p>
+    <p class="sub">Each kin has a job affinity: Dig, Trawl, or Skirmish. Camp it or short-battle with Skirmish kin.</p>
   </div>`;
 }
 function viewCamp(){
@@ -305,21 +302,21 @@ function viewFight(){
     const c=cre(S.fight.u); const s=c&&sp(c.sp); const w=WILD.find(x=>x.id===S.fight.wildId);
     return `<div class="card"><h2>Battle</h2>
       <div class="row">${c?sprite(s):""}<div class="grow"><b>${s?s.n:""}</b> HP ${Math.max(0,S.fight.chp)}<div class="hp"><i style="width:${Math.max(0,100*S.fight.chp/(10+power(c)*2))}%"></i></div></div></div>
-      <div class="row"><div class="dot" style="background:#4a3040">🐺</div><div class="grow"><b>${w.n}</b> HP ${Math.max(0,S.fight.mcur)}<div class="hp"><i style="width:${Math.max(0,100*S.fight.mcur/w.hp)}%"></i></div></div></div>
-      <p class="sub">Auto-resolves. Fighters in camp still idle.</p>
+      <div class="row"><div class="dot" style="background:#4a3040">◇</div><div class="grow"><b>${w.n}</b> HP ${Math.max(0,S.fight.mcur)}<div class="hp"><i style="width:${Math.max(0,100*S.fight.mcur/w.hp)}%"></i></div></div></div>
+      <p class="sub">Auto-resolves. Camp still ticks.</p>
     </div>`;
   }
   const fighters=S.bag.filter(c=>sp(c.sp).role==="fight");
-  let h=`<div class="card"><h2>Short battle</h2><p class="sub">Fighting-role creatures only. Instant ticks, not a 5:00 wait.</p>`;
-  if(!fighters.length) h+=`<div class="empty">Catch a fighter (Scrapup, Dustfox…).</div>`;
+  let h=`<div class="card"><h2>Short battle</h2><p class="sub">Skirmish kin only. Instant ticks, not another hunt wait.</p>`;
+  if(!fighters.length) h+=`<div class="empty">Catch a Skirmish kin (Draug, Velm, Skarnox…).</div>`;
   else {
-    h+=`<p class="tag">Your fighter</p>`;
+    h+=`<p class="tag">Your kin</p>`;
     for(const c of fighters){
       const s=sp(c.sp);
       h+=`<div class="row">${sprite(s)}<div class="grow"><b>${s.n}</b> lv ${c.lv} · pwr ${power(c)}</div>
-        <button class="btn g" onclick="startFight('${c.u}','rat')">Rat</button>
-        <button class="btn" onclick="startFight('${c.u}','wolf')">Wolf</button>
-        <button class="btn o" onclick="startFight('${c.u}','dire')">Dire</button></div>`;
+        <button class="btn g" onclick="startFight('${c.u}','shrike')">Shrike</button>
+        <button class="btn" onclick="startFight('${c.u}','wight')">Wight</button>
+        <button class="btn o" onclick="startFight('${c.u}','hollow')">Titan</button></div>`;
     }
   }
   return h+`</div>`;
