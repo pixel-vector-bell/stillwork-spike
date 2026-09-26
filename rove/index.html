@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<title>Greeb Planet</title>
+<title>Greebles</title>
 <style>
 :root{
   --bg:#121820; --card:#1c2633; --line:#314056; --ink:#e8eef6; --dim:#8ea0b5;
@@ -58,7 +58,7 @@ nav button.on{color:var(--gold)}
 <body>
 <div id="app">
   <header>
-    <div><b>GREEB PLANET</b><div class="meta">Lost on a strange planet</div><div class="meta" id="bagmeta">Bag 0/50</div></div>
+    <div><b>GREEBLES</b><div class="meta">Lost on a strange planet</div><div class="meta" id="bagmeta">Bag 0/50</div></div>
     <div class="gold" id="gold">0 scrap</div>
   </header>
   <main id="main"></main>
@@ -77,29 +77,29 @@ const CAMPS = 4;
 const XP_NEED = lv => 20 + lv * 12;
 
 const SP = [
-  {id:"gleck",n:"Ash Greeb",role:"mine",r:"common",evo:"gleckor",evoLv:10,mark:"▲",col:"#6e5a88"},
+  {id:"gleck",n:"Ash Greeble",role:"mine",r:"common",evo:"gleckor",evoLv:10,mark:"▲",col:"#6e5a88"},
   {id:"gleckor",n:"Hulking Ash",role:"mine",r:"uncommon",mark:"◆",col:"#4a3868"},
-  {id:"vorr",n:"Moss Greeb",role:"mine",r:"common",mark:"⬡",col:"#8a6048"},
-  {id:"klyx",n:"Glass Greeb",role:"mine",r:"common",mark:"✧",col:"#70c8c0"},
-  {id:"zoln",n:"Ember Greeb",role:"mine",r:"uncommon",mark:"◉",col:"#c45a32"},
-  {id:"umberith",n:"Umber Greeb",role:"mine",r:"uncommon",mark:"▣",col:"#5a4838"},
+  {id:"vorr",n:"Moss Greeble",role:"mine",r:"common",mark:"⬡",col:"#8a6048"},
+  {id:"klyx",n:"Glass Greeble",role:"mine",r:"common",mark:"✧",col:"#70c8c0"},
+  {id:"zoln",n:"Ember Greeble",role:"mine",r:"uncommon",mark:"◉",col:"#c45a32"},
+  {id:"umberith",n:"Umber Greeble",role:"mine",r:"uncommon",mark:"▣",col:"#5a4838"},
   {id:"phaest",n:"Prime Digger",role:"mine",r:"rare",evo:"phaestyn",evoLv:16,mark:"✦",col:"#d4a060"},
   {id:"phaestyn",n:"Titan Digger",role:"mine",r:"rare",mark:"✸",col:"#e8c878"},
   {id:"quorvex",n:"Apex Digger",role:"mine",r:"chase",mark:"★",col:"#e0c36a"},
-  {id:"nulith",n:"Tide Greeb",role:"fish",r:"common",evo:"nulithar",evoLv:10,mark:"☽",col:"#4a88b8"},
+  {id:"nulith",n:"Tide Greeble",role:"fish",r:"common",evo:"nulithar",evoLv:10,mark:"☽",col:"#4a88b8"},
   {id:"nulithar",n:"Deep Tide",role:"fish",r:"uncommon",mark:"☾",col:"#2a6088"},
-  {id:"iskari",n:"Drift Greeb",role:"fish",r:"common",mark:"◇",col:"#7ec8e0"},
-  {id:"vesperid",n:"Veil Greeb",role:"fish",r:"common",mark:"✧",col:"#8a70b0"},
-  {id:"thalune",n:"Murk Greeb",role:"fish",r:"uncommon",mark:"≈",col:"#3a7080"},
+  {id:"iskari",n:"Drift Greeble",role:"fish",r:"common",mark:"◇",col:"#7ec8e0"},
+  {id:"vesperid",n:"Veil Greeble",role:"fish",r:"common",mark:"✧",col:"#8a70b0"},
+  {id:"thalune",n:"Murk Greeble",role:"fish",r:"uncommon",mark:"≈",col:"#3a7080"},
   {id:"orryx",n:"Keen Trawler",role:"fish",r:"uncommon",mark:"◈",col:"#50a090"},
   {id:"caelith",n:"Prime Trawler",role:"fish",r:"rare",mark:"▽",col:"#a8d0e8"},
   {id:"aelurion",n:"Apex Trawler",role:"fish",r:"chase",mark:"✧",col:"#d0e8f0"},
-  {id:"draug",n:"Scrap Greeb",role:"fight",r:"common",evo:"draugoth",evoLv:10,mark:"✕",col:"#8a3048"},
+  {id:"draug",n:"Scrap Greeble",role:"fight",r:"common",evo:"draugoth",evoLv:10,mark:"✕",col:"#8a3048"},
   {id:"draugoth",n:"Hulking Scrap",role:"fight",r:"uncommon",mark:"⚔",col:"#6a1830"},
-  {id:"velm",n:"Rust Greeb",role:"fight",r:"common",mark:"△",col:"#c07050"},
-  {id:"skarnox",n:"Thorn Greeb",role:"fight",r:"common",mark:"▽",col:"#607848"},
-  {id:"pyrrax",n:"Cinder Greeb",role:"fight",r:"uncommon",mark:"▲",col:"#d05028"},
-  {id:"hokari",n:"Hollow Greeb",role:"fight",r:"uncommon",mark:"☰",col:"#4a5068"},
+  {id:"velm",n:"Rust Greeble",role:"fight",r:"common",mark:"△",col:"#c07050"},
+  {id:"skarnox",n:"Thorn Greeble",role:"fight",r:"common",mark:"▽",col:"#607848"},
+  {id:"pyrrax",n:"Cinder Greeble",role:"fight",r:"uncommon",mark:"▲",col:"#d05028"},
+  {id:"hokari",n:"Hollow Greeble",role:"fight",r:"uncommon",mark:"☰",col:"#4a5068"},
   {id:"nyxil",n:"Prime Scrapper",role:"fight",r:"rare",mark:"▼",col:"#3a2048"},
   {id:"myrrhax",n:"Apex Scrapper",role:"fight",r:"chase",mark:"♔",col:"#e0c36a"},
 ];
@@ -251,12 +251,12 @@ function viewHunt(){
   const ready=huntReady();
   return `<div class="card">
     <h2>Explore</h2>
-    <p class="sub">You are an explorer stranded on this planet. Send yourself out. Greebs — short, goblin-like, one species — may follow. Machines still patrol. 1:00 cooldown (test).</p>
+    <p class="sub">You are an explorer stranded on this planet. Send yourself out. Greebles — short, goblin-like, one species — may follow. Machines still patrol. 1:00 cooldown (test).</p>
     <div class="timer">${ready?"Ready":fmt(huntLeft())}</div>
     <button class="big" ${ready?"":"disabled"} onclick="hunt()">Walk the planet</button>
   </div>
-  <div class="card"><h2>Greebs vs machines</h2>
-    <p class="sub">Every Greeb is the same creature with a caste: Dig, Trawl, or Skirmish. Morphs are Ash, Tide, Scrap, and so on. Apex morphs usually vanish.</p>
+  <div class="card"><h2>Greebles vs machines</h2>
+    <p class="sub">Every Greeble is the same creature with a caste: Dig, Trawl, or Skirmish. Morphs are Ash, Tide, Scrap, and so on. Apex morphs usually vanish.</p>
     <p class="sub">Camp four of them. Fight the robots (drones, pylons, colossi). Graft two of the same morph to grow or evolve.</p>
   </div>`;
 }
@@ -307,10 +307,10 @@ function viewFight(){
     </div>`;
   }
   const fighters=S.bag.filter(c=>sp(c.sp).role==="fight");
-  let h=`<div class="card"><h2>Robot patrol</h2><p class="sub">Skirmish Greebs only. The planet’s machines do not join the bag.</p>`;
-  if(!fighters.length) h+=`<div class="empty">Need a Skirmish Greeb (Scrap, Rust, Thorn…).</div>`;
+  let h=`<div class="card"><h2>Robot patrol</h2><p class="sub">Skirmish Greebles only. The planet’s machines do not join the bag.</p>`;
+  if(!fighters.length) h+=`<div class="empty">Need a Skirmish Greeble (Scrap, Rust, Thorn…).</div>`;
   else {
-    h+=`<p class="tag">Your Greeb</p>`;
+    h+=`<p class="tag">Your Greeble</p>`;
     for(const c of fighters){
       const s=sp(c.sp);
       h+=`<div class="row">${sprite(s)}<div class="grow"><b>${s.n}</b> lv ${c.lv} · pwr ${power(c)}</div>
