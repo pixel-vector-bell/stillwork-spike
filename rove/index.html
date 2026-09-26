@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>Rove</title>
+<style>
+:root{
+  --bg:#121820; --card:#1c2633; --line:#314056; --ink:#e8eef6; --dim:#8ea0b5;
+  --gold:#e0c36a; --ok:#3ecf7a; --bad:#e07070; --btn:#4c6fff; --mine:#c4a06a;
+  --fish:#6ab4d4; --fight:#d07070;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#0b0f14;color:var(--ink);
+  font:15px/1.35 system-ui,Segoe UI,sans-serif}
+#app{max-width:430px;margin:0 auto;min-height:100dvh;background:var(--bg);
+  display:flex;flex-direction:column;position:relative}
+header{padding:calc(10px + env(safe-area-inset-top)) 14px 10px;
+  display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid var(--line);background:#151c26}
+header b{letter-spacing:.12em}
+.meta{font-size:12px;color:var(--dim)}
+.gold{color:var(--gold);font-variant-numeric:tabular-nums}
+main{flex:1;overflow:auto;padding:12px 12px 88px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}
+h2{margin:0 0 8px;font-size:15px}
+.big{width:100%;border:0;border-radius:14px;padding:16px;font:600 16px system-ui;
+  background:var(--btn);color:#fff;cursor:pointer}
+.big:disabled{background:#2a3544;color:var(--dim)}
+.timer{text-align:center;font-size:28px;font-variant-numeric:tabular-nums;margin:8px 0;color:var(--gold)}
+.row{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #263140}
+.row:last-child{border-bottom:0}
+.dot{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-size:18px;flex:0 0 36px}
+.grow{flex:1;min-width:0}
+.sub{font-size:12px;color:var(--dim)}
+.tag{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+.r-common{color:#c8d0d8}.r-uncommon{color:#7ec8a0}.r-rare{color:#7ec8c8}.r-chase{color:var(--gold)}
+.btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.btn{border:0;border-radius:8px;padding:8px 10px;background:#2a3544;color:var(--ink);font:inherit;cursor:pointer}
+.btn.g{background:#2a4a34;color:var(--ok)}
+.btn.o{background:#4a3a20;color:var(--gold)}
+.btn.d{background:#4a2a2a;color:var(--bad)}
+nav{position:sticky;bottom:0;display:grid;grid-template-columns:repeat(4,1fr);
+  background:#151c26;border-top:1px solid var(--line);padding:6px 6px calc(8px + env(safe-area-inset-bottom))}
+nav button{background:none;border:0;color:var(--dim);padding:8px 4px;font:12px system-ui;cursor:pointer}
+nav button.on{color:var(--gold)}
+.empty{color:var(--dim);text-align:center;padding:24px 8px}
+.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#1c2633;
+  border:1px solid var(--gold);color:var(--gold);padding:8px 12px;border-radius:10px;
+  opacity:0;pointer-events:none;transition:opacity .25s;max-width:90%}
+.toast.on{opacity:1}
+.slot{min-height:64px}
+.hp{height:8px;background:#2a1818;border-radius:4px;overflow:hidden;margin-top:6px}
+.hp>i{display:block;height:100%;background:var(--bad)}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div><b>ROVE</b><div class="meta" id="bagmeta">Bag 0/50</div></div>
+    <div class="gold" id="gold">0 gp</div>
+  </header>
+  <main id="main"></main>
+  <nav>
+    <button class="on" data-v="hunt">Hunt</button>
+    <button data-v="camp">Camp</button>
+    <button data-v="bag">Bag</button>
+    <button data-v="fight">Fight</button>
+  </nav>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const HUNT_MS = 5 * 60 * 1000;
+const BAG_MAX = 50;
+const CAMPS = 4;
+const XP_NEED = lv => 20 + lv * 12;
+
+const SP = [
+  {id:"pebblet",n:"Pebblet",role:"mine",r:"common",evo:"gravall",evoLv:10,mark:"▲",col:"#8a7a62"},
+  {id:"gravall",n:"Gravall",role:"mine",r:"uncommon",mark:"◆",col:"#6a6054"},
+  {id:"copperkit",n:"Copperkit",role:"mine",r:"common",mark:"•",col:"#c4844a"},
+  {id:"quartzling",n:"Quartzling",role:"mine",r:"common",mark:"✧",col:"#d0d8e0"},
+  {id:"emberat",n:"Emberat",role:"mine",r:"uncommon",mark:"▾",col:"#c45a32"},
+  {id:"sootling",n:"Sootling",role:"mine",r:"uncommon",mark:"○",col:"#4a4a52"},
+  {id:"orelet",n:"Orelet",role:"mine",r:"rare",evo:"veinstone",evoLv:16,mark:"▣",col:"#7a90a8"},
+  {id:"veinstone",n:"Veinstone",role:"mine",r:"rare",mark:"■",col:"#4a6888"},
+  {id:"magmite",n:"Magmite",role:"mine",r:"rare",mark:"▲",col:"#d45a2a"},
+  {id:"crownore",n:"Crownore",role:"mine",r:"chase",mark:"★",col:"#e0c36a"},
+  {id:"darter",n:"Darter",role:"fish",r:"common",evo:"brookfin",evoLv:10,mark:"›",col:"#6ab4d4"},
+  {id:"brookfin",n:"Brookfin",role:"fish",r:"uncommon",mark:"»",col:"#3a88a8"},
+  {id:"minnow",n:"Minnow",role:"fish",r:"common",mark:"·",col:"#9ad0c8"},
+  {id:"kelpling",n:"Kelpling",role:"fish",r:"common",mark:"~",col:"#5a9070"},
+  {id:"saltcrab",n:"Saltcrab",role:"fish",r:"common",mark:"+",col:"#d09070"},
+  {id:"tidepup",n:"Tidepup",role:"fish",r:"uncommon",mark:"ω",col:"#4a90c0"},
+  {id:"fogeel",n:"Fogeel",role:"fish",r:"uncommon",mark:"∫",col:"#8aa0b0"},
+  {id:"deepgill",n:"Deepgill",role:"fish",r:"rare",mark:"∇",col:"#2a5080"},
+  {id:"mirrorcarp",n:"Mirrorcarp",role:"fish",r:"chase",mark:"◇",col:"#c8e0e8"},
+  {id:"scrapup",n:"Scrapup",role:"fight",r:"common",evo:"brashound",evoLv:10,mark:"✕",col:"#a07060"},
+  {id:"brashound",n:"Brashound",role:"fight",r:"uncommon",mark:"⚔",col:"#8a4030"},
+  {id:"dustfox",n:"Dustfox",role:"fight",r:"common",mark:"△",col:"#c4a070"},
+  {id:"thornbat",n:"Thornbat",role:"fight",r:"common",mark:"*",col:"#607848"},
+  {id:"nightelk",n:"Nightelk",role:"fight",r:"uncommon",mark:"Y",col:"#4a5068"},
+  {id:"ironjaw",n:"Ironjaw",role:"fight",r:"uncommon",mark:"≡",col:"#808890"},
+  {id:"direpelt",n:"Direpelt",role:"fight",r:"rare",mark:"▼",col:"#5a3040"},
+  {id:"ashwyrm",n:"Ashwyrm",role:"fight",r:"rare",mark:"S",col:"#705848"},
+  {id:"kingfang",n:"Kingfang",role:"fight",r:"chase",mark:"♔",col:"#e0c36a"},
+];
+const W = {common:56, uncommon:28, rare:12, chase:4};
+const CATCH = {common:0.9, uncommon:0.7, rare:0.4, chase:0.12};
+const WILD = [
+  {id:"rat",n:"Trail rat",hp:16,atk:3,xp:8},
+  {id:"wolf",n:"Grey wolf",hp:32,atk:7,xp:18},
+  {id:"dire",n:"Dire wolf",hp:58,atk:12,xp:32},
+];
+
+const sp = id => SP.find(s=>s.id===id);
+function uid(){return Math.random().toString(36).slice(2,9)}
+function rollSp(){
+  const bag=[];
+  for(const s of SP){ if(s.evo && SP.some(x=>x.evo===s.id)) continue; /* allow all including evos at low weight */
+  }
+  const pool=SP.filter(s=>!SP.some(x=>x.evo===s.id)); // only base forms in hunts
+  const w=[];
+  for(const s of pool){for(let i=0;i<(W[s.r]||1);i++) w.push(s)}
+  return w[Math.floor(Math.random()*w.length)];
+}
+
+const S = {
+  gold: 20,
+  bag: [],
+  camp: [null,null,null,null],
+  huntAt: 0,
+  view: "hunt",
+  sel: null,
+  fight: null,
+  last: Date.now(),
+  toast: "",
+};
+function save(){localStorage.setItem("rove-v1", JSON.stringify({...S, toast:"", fight:S.fight}))}
+function load(){
+  try{
+    const d=JSON.parse(localStorage.getItem("rove-v1")||"null");
+    if(!d) return;
+    S.gold=d.gold??20; S.bag=d.bag||[]; S.camp=d.camp||[null,null,null,null];
+    S.huntAt=d.huntAt||0; S.last=d.last||Date.now();
+    idle(Date.now()-S.last);
+  }catch(e){}
+}
+function toast(m){S.toast=m; const t=document.getElementById("toast"); t.textContent=m; t.classList.add("on"); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove("on"),2400)}
+function inCamp(id){return S.camp.includes(id)}
+function cre(id){return S.bag.find(c=>c.u===id)}
+function power(c){const s=sp(c.sp); const m=s.r==="chase"?8:s.r==="rare"?5:s.r==="uncommon"?3:2; return m+c.lv+(s.role==="fight"?2:0)}
+function yieldAmt(c){return 1+Math.floor(c.lv/4)}
+function idle(ms){
+  const ticks=Math.min(400, Math.floor(ms/15000));
+  if(ticks<1) return;
+  for(let i=0;i<ticks;i++){
+    for(const id of S.camp){
+      if(!id) continue;
+      const c=cre(id); if(!c) continue;
+      const s=sp(c.sp);
+      c.xp += 3;
+      if(s.role==="mine") S.gold += yieldAmt(c);
+      else if(s.role==="fish") S.gold += yieldAmt(c);
+      else S.gold += yieldAmt(c)+1;
+      while(c.xp>=XP_NEED(c.lv) && c.lv<40){c.xp-=XP_NEED(c.lv); c.lv++}
+    }
+  }
+}
+
+function huntReady(){return Date.now()>=S.huntAt}
+function huntLeft(){return Math.max(0, S.huntAt-Date.now())}
+function hunt(){
+  if(!huntReady()) return;
+  S.huntAt = Date.now()+HUNT_MS;
+  if(Math.random()>0.8){toast("The trainer came back empty."); save(); render(); return}
+  const s=rollSp();
+  if(Math.random()>CATCH[s.r]){toast("Saw a "+s.n+" — it fled."); save(); render(); return}
+  if(S.bag.length>=BAG_MAX){toast("Bag full. Sell or combine first."); save(); render(); return}
+  const c={u:uid(),sp:s.id,lv:1,xp:0};
+  S.bag.push(c);
+  toast("Caught "+s.n+" ("+s.r+")");
+  save(); render();
+}
+
+function sell(u){
+  const c=cre(u); if(!c) return;
+  if(inCamp(u)) S.camp=S.camp.map(x=>x===u?null:x);
+  const s=sp(c.sp);
+  const gp=(s.r==="chase"?80:s.r==="rare"?28:s.r==="uncommon"?10:4)*c.lv;
+  S.gold+=gp;
+  S.bag=S.bag.filter(x=>x.u!==u);
+  if(S.sel===u) S.sel=null;
+  toast("Sold "+s.n+" for "+gp+" gp");
+  save(); render();
+}
+function combine(u){
+  const c=cre(u); if(!c) return;
+  const other=S.bag.find(x=>x.u!==u && x.sp===c.sp && !inCamp(x.u));
+  if(!other){toast("Need another "+sp(c.sp).n+" in the bag, not in camp."); return}
+  S.bag=S.bag.filter(x=>x.u!==other.u);
+  c.xp += 40 + other.lv*15;
+  while(c.xp>=XP_NEED(c.lv) && c.lv<40){c.xp-=XP_NEED(c.lv); c.lv++}
+  const s=sp(c.sp);
+  if(s.evo && c.lv>=s.evoLv){
+    c.sp=s.evo; toast("Evolved into "+sp(c.sp).n);
+  } else toast("Combined. "+sp(c.sp).n+" is lv "+c.lv);
+  save(); render();
+}
+function assign(u, slot){
+  if(inCamp(u)) S.camp=S.camp.map(x=>x===u?null:x);
+  S.camp[slot]=u;
+  save(); render();
+}
+function startFight(u, wildId){
+  const c=cre(u); const w=WILD.find(x=>x.id===wildId);
+  if(!c||!w) return;
+  S.fight={u, wildId, chp: 10+power(c)*2, mhp:w.hp, mcur:w.hp, t:Date.now()};
+  S.view="fight";
+  render();
+}
+function fightTick(){
+  const f=S.fight; if(!f) return;
+  const c=cre(f.u); if(!c){S.fight=null; return}
+  const w=WILD.find(x=>x.id===f.wildId);
+  f.mcur -= Math.max(1, power(c));
+  if(f.mcur<=0){
+    c.xp += w.xp+8;
+    while(c.xp>=XP_NEED(c.lv)&&c.lv<40){c.xp-=XP_NEED(c.lv);c.lv++}
+    S.gold += 4+c.lv;
+    S.fight=null;
+    toast("Won. "+sp(c.sp).n+" gained xp.");
+    save(); return;
+  }
+  f.chp -= Math.max(1, w.atk - Math.floor(c.lv/5));
+  if(f.chp<=0){
+    S.fight=null;
+    toast(sp(c.sp).n+" fled the fight.");
+    save();
+  }
+}
+
+function fmt(ms){
+  const s=Math.ceil(ms/1000); const m=Math.floor(s/60); const r=s%60;
+  return m+":"+String(r).padStart(2,"0");
+}
+function sprite(s){
+  return `<div class="dot" style="background:${s.col}">${s.mark}</div>`;
+}
+function roleLab(r){return r==="mine"?"Mine":r==="fish"?"Fish":"Fight"}
+
+function viewHunt(){
+  const ready=huntReady();
+  return `<div class="card">
+    <h2>Trainer hunt</h2>
+    <p class="sub">Send the trainer out. 80% chance of an encounter. Rarity decides if it stays. 5:00 cooldown.</p>
+    <div class="timer">${ready?"Ready":fmt(huntLeft())}</div>
+    <button class="big" ${ready?"":"disabled"} onclick="hunt()">Send trainer</button>
+  </div>
+  <div class="card"><h2>Roster mix</h2>
+    <p class="sub">24 species. Commons fill the bag. Chase things (Crownore, Mirrorcarp, Kingfang) almost always flee.</p>
+    <p class="sub">Jobs: mine / fish / fight. Own one and you can camp it or short-battle with it.</p>
+  </div>`;
+}
+function viewCamp(){
+  let h=`<div class="card"><h2>Camp · ${S.camp.filter(Boolean).length}/${CAMPS} working</h2>
+    <p class="sub">Only four idle at once. Each tick (~15s) they earn gp and xp from their role.</p>`;
+  for(let i=0;i<CAMPS;i++){
+    const id=S.camp[i]; const c=id&&cre(id); const s=c&&sp(c.sp);
+    h+=`<div class="row slot">${c?sprite(s)+`<div class="grow"><b>${s.n}</b> lv ${c.lv}<div class="sub">${roleLab(s.role)} · ${s.r}</div></div>
+      <button class="btn" onclick="S.camp[${i}]=null;save();render()">Bench</button>`
+      :`<div class="grow sub">Empty camp ${i+1}</div>`}</div>`;
+  }
+  h+=`</div><div class="card"><h2>Send from bag</h2>`;
+  const free=S.bag.filter(c=>!inCamp(c.u));
+  if(!free.length) h+=`<div class="empty">Catch something, then park it here.</div>`;
+  else for(const c of free){
+    const s=sp(c.sp);
+    const slot=S.camp.findIndex(x=>!x);
+    h+=`<div class="row">${sprite(s)}<div class="grow"><b>${s.n}</b> lv ${c.lv}<div class="sub">${roleLab(s.role)}</div></div>
+      <button class="btn g" ${slot<0?"disabled":""} onclick="assign('${c.u}',${slot<0?0:slot})">Camp</button></div>`;
+  }
+  return h+`</div>`;
+}
+function viewBag(){
+  let h=`<div class="card"><h2>Bag ${S.bag.length}/${BAG_MAX}</h2>
+    <p class="sub">Sell for gp. Combine two of the same species for xp (and evolution if they have one).</p>`;
+  if(!S.bag.length) h+=`<div class="empty">Empty. Hunt.</div>`;
+  const sorted=[...S.bag].sort((a,b)=>sp(a.sp).n.localeCompare(sp(b.sp).n));
+  for(const c of sorted){
+    const s=sp(c.sp);
+    const camp=inCamp(c.u);
+    h+=`<div class="row">${sprite(s)}<div class="grow"><b>${s.n}</b> lv ${c.lv}
+      <div class="sub"><span class="r-${s.r}">${s.r}</span> · ${roleLab(s.role)}${camp?" · camping":""}${s.evo?" · evo lv "+s.evoLv:""}</div></div></div>
+      <div class="btns">
+        <button class="btn o" onclick="combine('${c.u}')">Combine</button>
+        <button class="btn d" onclick="sell('${c.u}')">Sell</button>
+      </div>`;
+  }
+  return h+`</div>`;
+}
+function viewFight(){
+  if(S.fight){
+    const c=cre(S.fight.u); const s=c&&sp(c.sp); const w=WILD.find(x=>x.id===S.fight.wildId);
+    return `<div class="card"><h2>Battle</h2>
+      <div class="row">${c?sprite(s):""}<div class="grow"><b>${s?s.n:""}</b> HP ${Math.max(0,S.fight.chp)}<div class="hp"><i style="width:${Math.max(0,100*S.fight.chp/(10+power(c)*2))}%"></i></div></div></div>
+      <div class="row"><div class="dot" style="background:#4a3040">🐺</div><div class="grow"><b>${w.n}</b> HP ${Math.max(0,S.fight.mcur)}<div class="hp"><i style="width:${Math.max(0,100*S.fight.mcur/w.hp)}%"></i></div></div></div>
+      <p class="sub">Auto-resolves. Fighters in camp still idle.</p>
+    </div>`;
+  }
+  const fighters=S.bag.filter(c=>sp(c.sp).role==="fight");
+  let h=`<div class="card"><h2>Short battle</h2><p class="sub">Fighting-role creatures only. Instant ticks, not a 5:00 wait.</p>`;
+  if(!fighters.length) h+=`<div class="empty">Catch a fighter (Scrapup, Dustfox…).</div>`;
+  else {
+    h+=`<p class="tag">Your fighter</p>`;
+    for(const c of fighters){
+      const s=sp(c.sp);
+      h+=`<div class="row">${sprite(s)}<div class="grow"><b>${s.n}</b> lv ${c.lv} · pwr ${power(c)}</div>
+        <button class="btn g" onclick="startFight('${c.u}','rat')">Rat</button>
+        <button class="btn" onclick="startFight('${c.u}','wolf')">Wolf</button>
+        <button class="btn o" onclick="startFight('${c.u}','dire')">Dire</button></div>`;
+    }
+  }
+  return h+`</div>`;
+}
+
+function render(){
+  document.getElementById("bagmeta").textContent="Bag "+S.bag.length+"/"+BAG_MAX;
+  document.getElementById("gold").textContent=S.gold+" gp";
+  const v=S.view;
+  document.getElementById("main").innerHTML =
+    v==="hunt"?viewHunt():v==="camp"?viewCamp():v==="bag"?viewBag():viewFight();
+  document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on", b.dataset.v===v));
+}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{S.view=b.dataset.v; render()});
+
+load();
+render();
+let acc=0;
+setInterval(()=>{
+  if(S.fight) fightTick();
+  acc+=1000;
+  if(acc>=15000){ idle(15000); acc=0; }
+  S.last=Date.now();
+  save();
+  render();
+},1000);
+</script>
+</body>
+</html>
