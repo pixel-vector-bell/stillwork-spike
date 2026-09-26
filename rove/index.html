@@ -58,7 +58,7 @@ nav button.on{color:var(--gold)}
 <body>
 <div id="app">
   <header>
-    <div><b>ROVE</b><div class="meta" id="bagmeta">Bag 0/50</div></div>
+    <div><b>ROVE</b><div class="meta">Lost on a strange planet</div><div class="meta" id="bagmeta">Bag 0/50</div></div>
     <div class="gold" id="gold">0 gp</div>
   </header>
   <main id="main"></main>
@@ -77,38 +77,38 @@ const CAMPS = 4;
 const XP_NEED = lv => 20 + lv * 12;
 
 const SP = [
-  {id:"gleck",n:"Gleck",role:"mine",r:"common",evo:"gleckor",evoLv:10,mark:"▲",col:"#6e5a88"},
-  {id:"gleckor",n:"Gleckor",role:"mine",r:"uncommon",mark:"◆",col:"#4a3868"},
-  {id:"vorr",n:"Vorr",role:"mine",r:"common",mark:"⬡",col:"#8a6048"},
-  {id:"klyx",n:"Klyx",role:"mine",r:"common",mark:"✧",col:"#70c8c0"},
-  {id:"zoln",n:"Zoln",role:"mine",r:"uncommon",mark:"◉",col:"#c45a32"},
-  {id:"umberith",n:"Umberith",role:"mine",r:"uncommon",mark:"▣",col:"#5a4838"},
-  {id:"phaest",n:"Phaest",role:"mine",r:"rare",evo:"phaestyn",evoLv:16,mark:"✦",col:"#d4a060"},
-  {id:"phaestyn",n:"Phaestyn",role:"mine",r:"rare",mark:"✸",col:"#e8c878"},
-  {id:"quorvex",n:"Quorvex",role:"mine",r:"chase",mark:"★",col:"#e0c36a"},
-  {id:"nulith",n:"Nulith",role:"fish",r:"common",evo:"nulithar",evoLv:10,mark:"☽",col:"#4a88b8"},
-  {id:"nulithar",n:"Nulithar",role:"fish",r:"uncommon",mark:"☾",col:"#2a6088"},
-  {id:"iskari",n:"Iskari",role:"fish",r:"common",mark:"◇",col:"#7ec8e0"},
-  {id:"vesperid",n:"Vesperid",role:"fish",r:"common",mark:"✧",col:"#8a70b0"},
-  {id:"thalune",n:"Thalune",role:"fish",r:"uncommon",mark:"≈",col:"#3a7080"},
-  {id:"orryx",n:"Orryx",role:"fish",r:"uncommon",mark:"◈",col:"#50a090"},
-  {id:"caelith",n:"Caelith",role:"fish",r:"rare",mark:"▽",col:"#a8d0e8"},
-  {id:"aelurion",n:"Aelurion",role:"fish",r:"chase",mark:"✧",col:"#d0e8f0"},
-  {id:"draug",n:"Draug",role:"fight",r:"common",evo:"draugoth",evoLv:10,mark:"✕",col:"#8a3048"},
-  {id:"draugoth",n:"Draugoth",role:"fight",r:"uncommon",mark:"⚔",col:"#6a1830"},
-  {id:"velm",n:"Velm",role:"fight",r:"common",mark:"△",col:"#c07050"},
-  {id:"skarnox",n:"Skarnox",role:"fight",r:"common",mark:"▽",col:"#607848"},
-  {id:"pyrrax",n:"Pyrrax",role:"fight",r:"uncommon",mark:"▲",col:"#d05028"},
-  {id:"hokari",n:"Hokari",role:"fight",r:"uncommon",mark:"☰",col:"#4a5068"},
-  {id:"nyxil",n:"Nyxil",role:"fight",r:"rare",mark:"▼",col:"#3a2048"},
-  {id:"myrrhax",n:"Myrrhax",role:"fight",r:"chase",mark:"♔",col:"#e0c36a"},
+  {id:"gleck",n:"Ash Greeb",role:"mine",r:"common",evo:"gleckor",evoLv:10,mark:"▲",col:"#6e5a88"},
+  {id:"gleckor",n:"Hulking Ash",role:"mine",r:"uncommon",mark:"◆",col:"#4a3868"},
+  {id:"vorr",n:"Moss Greeb",role:"mine",r:"common",mark:"⬡",col:"#8a6048"},
+  {id:"klyx",n:"Glass Greeb",role:"mine",r:"common",mark:"✧",col:"#70c8c0"},
+  {id:"zoln",n:"Ember Greeb",role:"mine",r:"uncommon",mark:"◉",col:"#c45a32"},
+  {id:"umberith",n:"Umber Greeb",role:"mine",r:"uncommon",mark:"▣",col:"#5a4838"},
+  {id:"phaest",n:"Prime Digger",role:"mine",r:"rare",evo:"phaestyn",evoLv:16,mark:"✦",col:"#d4a060"},
+  {id:"phaestyn",n:"Titan Digger",role:"mine",r:"rare",mark:"✸",col:"#e8c878"},
+  {id:"quorvex",n:"Apex Digger",role:"mine",r:"chase",mark:"★",col:"#e0c36a"},
+  {id:"nulith",n:"Tide Greeb",role:"fish",r:"common",evo:"nulithar",evoLv:10,mark:"☽",col:"#4a88b8"},
+  {id:"nulithar",n:"Deep Tide",role:"fish",r:"uncommon",mark:"☾",col:"#2a6088"},
+  {id:"iskari",n:"Drift Greeb",role:"fish",r:"common",mark:"◇",col:"#7ec8e0"},
+  {id:"vesperid",n:"Veil Greeb",role:"fish",r:"common",mark:"✧",col:"#8a70b0"},
+  {id:"thalune",n:"Murk Greeb",role:"fish",r:"uncommon",mark:"≈",col:"#3a7080"},
+  {id:"orryx",n:"Keen Trawler",role:"fish",r:"uncommon",mark:"◈",col:"#50a090"},
+  {id:"caelith",n:"Prime Trawler",role:"fish",r:"rare",mark:"▽",col:"#a8d0e8"},
+  {id:"aelurion",n:"Apex Trawler",role:"fish",r:"chase",mark:"✧",col:"#d0e8f0"},
+  {id:"draug",n:"Scrap Greeb",role:"fight",r:"common",evo:"draugoth",evoLv:10,mark:"✕",col:"#8a3048"},
+  {id:"draugoth",n:"Hulking Scrap",role:"fight",r:"uncommon",mark:"⚔",col:"#6a1830"},
+  {id:"velm",n:"Rust Greeb",role:"fight",r:"common",mark:"△",col:"#c07050"},
+  {id:"skarnox",n:"Thorn Greeb",role:"fight",r:"common",mark:"▽",col:"#607848"},
+  {id:"pyrrax",n:"Cinder Greeb",role:"fight",r:"uncommon",mark:"▲",col:"#d05028"},
+  {id:"hokari",n:"Hollow Greeb",role:"fight",r:"uncommon",mark:"☰",col:"#4a5068"},
+  {id:"nyxil",n:"Prime Scrapper",role:"fight",r:"rare",mark:"▼",col:"#3a2048"},
+  {id:"myrrhax",n:"Apex Scrapper",role:"fight",r:"chase",mark:"♔",col:"#e0c36a"},
 ];
 const W = {common:56, uncommon:28, rare:12, chase:4};
 const CATCH = {common:0.9, uncommon:0.7, rare:0.4, chase:0.12};
 const WILD = [
-  {id:"shrike",n:"Glass shrike",hp:16,atk:3,xp:8},
-  {id:"wight",n:"Bog wight",hp:32,atk:7,xp:18},
-  {id:"hollow",n:"Hollow titan",hp:58,atk:12,xp:32},
+  {id:"shrike",n:"Rust drone",hp:16,atk:3,xp:8},
+  {id:"wight",n:"Sentinel pylon",hp:32,atk:7,xp:18},
+  {id:"hollow",n:"Patrol colossus",hp:58,atk:12,xp:32},
 ];
 
 const sp = id => SP.find(s=>s.id===id);
@@ -171,13 +171,13 @@ function huntLeft(){return Math.max(0, S.huntAt-Date.now())}
 function hunt(){
   if(!huntReady()) return;
   S.huntAt = Date.now()+HUNT_MS;
-  if(Math.random()>0.8){toast("The trainer came back empty."); save(); render(); return}
+  if(Math.random()>0.8){toast("The explorer came back alone."); save(); render(); return}
   const s=rollSp();
-  if(Math.random()>CATCH[s.r]){toast("Saw a "+s.n+" — it fled."); save(); render(); return}
-  if(S.bag.length>=BAG_MAX){toast("Bag full. Sell or combine first."); save(); render(); return}
+  if(Math.random()>CATCH[s.r]){toast("A "+s.n+" watched you, then vanished."); save(); render(); return}
+  if(S.bag.length>=BAG_MAX){toast("Bag full. Sell or graft first."); save(); render(); return}
   const c={u:uid(),sp:s.id,lv:1,xp:0};
   S.bag.push(c);
-  toast("Caught "+s.n+" ("+s.r+")");
+  toast("A "+s.n+" followed you home.");
   save(); render();
 }
 
@@ -250,14 +250,14 @@ function roleLab(r){return r==="mine"?"Dig":r==="fish"?"Trawl":"Skirmish"}
 function viewHunt(){
   const ready=huntReady();
   return `<div class="card">
-    <h2>Trainer hunt</h2>
-    <p class="sub">Send the trainer out. 80% chance of an encounter. Rarity decides if it stays. 1:00 cooldown (test).</p>
+    <h2>Explore</h2>
+    <p class="sub">You are an explorer stranded on this planet. Send yourself out. Greebs — short, goblin-like, one species — may follow. Machines still patrol. 1:00 cooldown (test).</p>
     <div class="timer">${ready?"Ready":fmt(huntLeft())}</div>
-    <button class="big" ${ready?"":"disabled"} onclick="hunt()">Send trainer</button>
+    <button class="big" ${ready?"":"disabled"} onclick="hunt()">Walk the planet</button>
   </div>
-  <div class="card"><h2>Roster mix</h2>
-    <p class="sub">Kin are not wildlife. Commons fill the bag. Chase kin (Quorvex, Aelurion, Myrrhax) usually flee.</p>
-    <p class="sub">Each kin has a job affinity: Dig, Trawl, or Skirmish. Camp it or short-battle with Skirmish kin.</p>
+  <div class="card"><h2>Greebs vs machines</h2>
+    <p class="sub">Every Greeb is the same creature with a caste: Dig, Trawl, or Skirmish. Morphs are Ash, Tide, Scrap, and so on. Apex morphs usually vanish.</p>
+    <p class="sub">Camp four of them. Fight the robots (drones, pylons, colossi). Graft two of the same morph to grow or evolve.</p>
   </div>`;
 }
 function viewCamp(){
@@ -282,7 +282,7 @@ function viewCamp(){
 }
 function viewBag(){
   let h=`<div class="card"><h2>Bag ${S.bag.length}/${BAG_MAX}</h2>
-    <p class="sub">Sell for gp. Combine two of the same species for xp (and evolution if they have one).</p>`;
+    <p class="sub">Sell for salvage. Graft two of the same morph for xp (and a hulking form if they have one).</p>`;
   if(!S.bag.length) h+=`<div class="empty">Empty. Hunt.</div>`;
   const sorted=[...S.bag].sort((a,b)=>sp(a.sp).n.localeCompare(sp(b.sp).n));
   for(const c of sorted){
@@ -291,7 +291,7 @@ function viewBag(){
     h+=`<div class="row">${sprite(s)}<div class="grow"><b>${s.n}</b> lv ${c.lv}
       <div class="sub"><span class="r-${s.r}">${s.r}</span> · ${roleLab(s.role)}${camp?" · camping":""}${s.evo?" · evo lv "+s.evoLv:""}</div></div></div>
       <div class="btns">
-        <button class="btn o" onclick="combine('${c.u}')">Combine</button>
+        <button class="btn o" onclick="combine('${c.u}')">Graft</button>
         <button class="btn d" onclick="sell('${c.u}')">Sell</button>
       </div>`;
   }
@@ -307,16 +307,16 @@ function viewFight(){
     </div>`;
   }
   const fighters=S.bag.filter(c=>sp(c.sp).role==="fight");
-  let h=`<div class="card"><h2>Short battle</h2><p class="sub">Skirmish kin only. Instant ticks, not another hunt wait.</p>`;
-  if(!fighters.length) h+=`<div class="empty">Catch a Skirmish kin (Draug, Velm, Skarnox…).</div>`;
+  let h=`<div class="card"><h2>Robot patrol</h2><p class="sub">Skirmish Greebs only. The planet’s machines do not join the bag.</p>`;
+  if(!fighters.length) h+=`<div class="empty">Need a Skirmish Greeb (Scrap, Rust, Thorn…).</div>`;
   else {
-    h+=`<p class="tag">Your kin</p>`;
+    h+=`<p class="tag">Your Greeb</p>`;
     for(const c of fighters){
       const s=sp(c.sp);
       h+=`<div class="row">${sprite(s)}<div class="grow"><b>${s.n}</b> lv ${c.lv} · pwr ${power(c)}</div>
-        <button class="btn g" onclick="startFight('${c.u}','shrike')">Shrike</button>
-        <button class="btn" onclick="startFight('${c.u}','wight')">Wight</button>
-        <button class="btn o" onclick="startFight('${c.u}','hollow')">Titan</button></div>`;
+        <button class="btn g" onclick="startFight('${c.u}','shrike')">Drone</button>
+        <button class="btn" onclick="startFight('${c.u}','wight')">Pylon</button>
+        <button class="btn o" onclick="startFight('${c.u}','hollow')">Colossus</button></div>`;
     }
   }
   return h+`</div>`;
@@ -324,7 +324,7 @@ function viewFight(){
 
 function render(){
   document.getElementById("bagmeta").textContent="Bag "+S.bag.length+"/"+BAG_MAX;
-  document.getElementById("gold").textContent=S.gold+" gp";
+  document.getElementById("gold").textContent=S.gold+" scrap";
   const v=S.view;
   document.getElementById("main").innerHTML =
     v==="hunt"?viewHunt():v==="camp"?viewCamp():v==="bag"?viewBag():viewFight();
